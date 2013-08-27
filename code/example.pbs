@@ -1,0 +1,16 @@
+#PBS -q class
+#PBS -l nodes=1
+#PBS -l walltime=00:01:00
+#PBS -N example
+
+# Changes to the directory we were in when we
+# submit the job:
+
+cd $PBS_O_WORKDIR
+
+# Runs a bunch of standard command-line
+# utilities, just as an example:
+
+echo "Script began:" `date`
+echo "Node:" `hostname`
+echo "Current directory: ${PWD}"
