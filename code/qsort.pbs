@@ -16,8 +16,11 @@ echo "Node:" `hostname`
 echo "Current directory: ${PWD}"
 
 echo ""
-echo "=== Running Quicksort on 10 million elements ... ==="
-./qsort 10000000
+echo "=== Running 5 trials of Quicksort on 10 million elements ... ==="
+for trial in 1 2 3 4 5 ; do
+  echo "*** Trial ${trial} ***"
+  ./qsort 10000000
+done
 
 echo ""
 echo "=== Done! ==="
