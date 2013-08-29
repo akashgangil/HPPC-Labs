@@ -84,7 +84,7 @@ quickSort (int N, keytype* A)
     int n_less = -1, n_equal = -1, n_greater = -1;
     partition (pivot, N, A, &n_less, &n_equal, &n_greater);
     assert (n_less >= 0 && n_equal >= 0 && n_greater >= 0);
-    quickSort (n_less, A);
+    _Cilk_spawn quickSort (n_less, A);
     quickSort (n_greater, A + n_less + n_equal);
   }
 }
