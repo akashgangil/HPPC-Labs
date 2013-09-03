@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "sort.hh"
+#include <cilk/cilk.h>
 
 /**
  *  Pivots the keys of A[0:N-1] around a given pivot value. The number
@@ -84,7 +85,7 @@ quickSort (int N, keytype* A)
     int n_less = -1, n_equal = -1, n_greater = -1;
     partition (pivot, N, A, &n_less, &n_equal, &n_greater);
     assert (n_less >= 0 && n_equal >= 0 && n_greater >= 0);
-    _Cilk_spawn quickSort (n_less, A);
+    cilk_spawn quickSort (n_less, A);
     quickSort (n_greater, A + n_less + n_equal);
   }
 }
