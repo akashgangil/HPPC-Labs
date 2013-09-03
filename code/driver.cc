@@ -50,12 +50,21 @@ main (int argc, char* argv[])
   for (int i = 0; i < N; ++i)
     A_in[i] = lrand48 ();
 
+  printf("\n******INPUT ARRAY**********\n");
+  for(int i =0 ; i< N ; i++)
+	printf("%ld ", A_in[i]);	
+  printf("\n**************************\n");
+
   printf ("\nN == %d\n\n", N);
 
   /* Sort sequentially */
   keytype* A_seq = newCopy (N, A_in);
   stopwatch_start (timer);
   sequentialSort (N, A_seq);
+  printf("\n*****SEQUENTIALLY SORTED ARRAY*********\n");
+  for(int i= 0; i<N ; i++)
+	printf("%ld ", A_seq[i]);
+  printf("\n**********************************\n");
   long double t_seq = stopwatch_stop (timer);
   printf ("Sequential: %Lg seconds ==> %Lg million keys per second\n",
 	  t_seq, 1e-6 * N / t_seq);
@@ -65,6 +74,12 @@ main (int argc, char* argv[])
   keytype* A_par = newCopy (N, A_in);
   stopwatch_start (timer);
   parallelSort (N, A_par);
+
+  printf("\n*****PARALLELY SORTED ARRAY*********\n");
+  for(int i= 0; i<N ; i++)
+	printf("%ld ", A_par[i]);
+  printf("\n**********************************\n");
+
   long double t_qs = stopwatch_stop (timer);
   printf ("Parallel sort: %Lg seconds ==> %Lg million keys per second\n",
 	  t_qs, 1e-6 * N / t_qs);

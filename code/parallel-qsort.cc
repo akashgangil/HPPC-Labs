@@ -8,6 +8,8 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
+#include <string.h>
 #include "sort.hh"
 #include <cilk/cilk.h>
 
@@ -30,39 +32,34 @@
 void partition (keytype pivot, int N, keytype* A,
 		int* p_n_lt, int* p_n_eq, int* p_n_gt)
 {
-  /* Count how many elements of A are less than (lt), equal to (eq),
-     or greater than (gt) the pivot value. */
+
   int n_lt = 0, n_eq = 0, n_gt = 0;
-  for (int i = 0; i < N; ++i) {
-    if (A[i] < pivot) ++n_lt;
-    else if (A[i] == pivot) ++n_eq;
-    else ++n_gt;
+
+  int* x = (int *) malloc(N * sizeof(int));
+  x[0] = 0;
+  for(int i=1; i < N; i++){
+    x[i] = !compare(x[i], pivot);
   }
 
-  keytype* A_orig = newCopy (N, A);
+  int* b = (int *) malloc( N * sizeof(int));
+  memcpy(b, x, N *sizeof(int));
 
-  /* Next, rearrange A so that:
-   *   A_lt == A[0:n_lt-1] == subset of A < pivot
-   *   A_eq == A[n_lt:(n_lt+n_eq-1)] == subset of A == pivot
-   *   A_gt == A[(n_lt+n_eq):(N-1)] == subset of A > pivot
-   */
-  int i_lt = 0; /* next open slot in A_lt */
-  int i_eq = n_lt; /* next open slot in A_eq */
-  int i_gt = n_lt + n_eq; /* next open slot in A_gt */
-  for (int i = 0; i < N; ++i) {
-    keytype ai = A_orig[i];
-    if (ai < pivot)
-      A[i_lt++] = ai;
-    else if (ai > pivot)
-      A[i_gt++] = ai;
-    else
-      A[i_eq++] = ai;
+  for(int j = 1; j <= ceil(log(N)/log(2)); j++){
+    int offset = (int)pow(2, j-1);
+    cilk_for (int k = 0; k < N ; k++){
+	if( k >= k - offset) x[k] += x[k-offset];   
+    }
+  } 
+
+  for(int i = 0; i < N; i++){
+    if(b[i] == 1) { 
+      swap(&A[i], &A[b[i]]);
+      n_lt++;
+    }
   }
-  assert (i_lt == n_lt);
-  assert (i_eq == (n_lt+n_eq));
-  assert (i_gt == N);
 
-  free (A_orig);
+  free(x);
+  free(b);
 
   if (p_n_lt) *p_n_lt = n_lt;
   if (p_n_eq) *p_n_eq = n_eq;
