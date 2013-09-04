@@ -31,6 +31,13 @@ void display(int *x, int N){
 	printf("\n");
 }
 
+void display_arr(keytype *x, int N){
+	for(int j=0; j < N; j++){
+		printf("%ld ", x[j]);
+	}
+	printf("\n");
+}
+
 void partition (keytype pivot, int N, keytype* A,
 		int* p_n_lt, int* p_n_eq, int* p_n_gt)
 {
@@ -40,29 +47,46 @@ void partition (keytype pivot, int N, keytype* A,
   int* x = (int *) malloc(N * sizeof(int));
   memset(x, 0, N*sizeof(int));
  
-  for(int i=1; i < N; i++){
+  for(int i=0; i < N; i++){
     x[i] = compare(A[i], pivot);
   }
 
-  printf("\nCOMPARE x[i]\n");
-  display(x, N);
+  
+
+  x[0] = 0;
 
   int* b = (int *) malloc( N * sizeof(int));
   memcpy(b, x, N *sizeof(int));
 
+  printf("\nCOMPARE B[i]\n");
+  display(b, N);
+  
+  printf("\nCOMPARE x[i]\n");
+  display(x, N);
+
+
   for(int j = 1; j <= ceil(log(N)/log(2)); j++){
     int offset = (int)pow(2, j-1);
-    for (int k = 0; k < N ; k++){
-	if( k >= k - offset) x[k] += x[k-offset];   
+    for (int k = N-1; k >=0 ; k--){
+	if(k - offset >= 0) x[k] += x[k-offset];   
     }
   } 
 
+ printf("\nPREFIX SCAN X[i]\n");
+ display(x, N);
+
+ printf("\nA[i] BEFORE\n");
+ display_arr(A, N);
+
   for(int i = 0; i < N; i++){
     if(b[i] == 1) { 
-      swap(&A[i], &A[b[i]]);
+      swap(&A[i], &A[x[i]]);
       n_lt++;
     }
   }
+
+ printf("\n A[i] AFTER\n");
+ display_arr(A, N);
 
   free(x);
   free(b);
