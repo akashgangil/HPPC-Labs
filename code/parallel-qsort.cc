@@ -15,7 +15,7 @@
 
 //#define DEBUG
 
-#define EX_DEBUG
+//#define EX_DEBUG
 
 int compare(keytype a, keytype b){
   if(a < b) return 1;
@@ -57,7 +57,7 @@ void exclusive_scan(int* x, int *e, int N){
 	}
 
 	for(int step = 0; (1 << step) <= N; step++){		
-		for(int i = 1<<step ; i < N; i += 1 ){
+		cilk_for(int i = 1<<step ; i < N; i += 1 ){
 			e[i] = e[i] + x[i - (1 << step)];
 		}
 	
