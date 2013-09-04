@@ -10,8 +10,9 @@ Approaches:
 
 
 TODO:
-1. Need to make exclusive scan thread safe, so that I can use cilk_for in it.
-2. Need to figure out a better way to keep a track of number of less than elements.
+1. Throws segmentation fault for 100000 elements!!!!! Need to fix this!
+2. Need to make exclusive scan thread safe, so that I can use cilk_for in it.
+3. Need to figure out a better way to keep a track of number of less than elements.
 
 
 
