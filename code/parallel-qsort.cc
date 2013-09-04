@@ -85,20 +85,29 @@ void partition (keytype pivot, int N, keytype* A,
  printf("\n A[i] AFTER\n");
  display_arr(A, N);
 
+
+ printf("\nCounter Values\n");
+ printf("\n n_lt = %d, n_gt = %d", n_lt, N - n_lt);
+
   free(x);
   free(b);
 
   if (p_n_lt) *p_n_lt = n_lt;
   if (p_n_eq) *p_n_eq = n_eq;
-  if (p_n_gt) *p_n_gt = n_gt;
+  if (p_n_gt) *p_n_gt = N - n_lt;
 }
 
 void
 quickSort (int N, keytype* A)
 {
+
+  printf("\nStarting the PARTITION subroutine with N = %d\n", N);
+  display_arr(A, N);
+
   const int G = 1; /* base case size, a tuning parameter */
-  if (N < G)
-    sequentialSort (N, A);
+  if (N<=1)
+    return;
+    //sequentialSort (N, A);
   else {
     // Choose pivot at random
     keytype pivot = A[rand () % N];
@@ -111,7 +120,7 @@ quickSort (int N, keytype* A)
     int n_less = -1, n_equal = -1, n_greater = -1;
     partition (pivot, N, A, &n_less, &n_equal, &n_greater);
     assert (n_less >= 0 && n_equal >= 0 && n_greater >= 0);
-    cilk_spawn quickSort (n_less, A);
+    quickSort (n_less, A);
     quickSort (n_greater, A + n_less + n_equal);
   }
 }
