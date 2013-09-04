@@ -11,6 +11,9 @@ Approaches:
 
 TODO:
 1. Throws segmentation fault for 100000 elements!!!!! Need to fix this!
+
+NOTE: Pretty certain the segmentation fault happens because I try to allocate more memory than maybe I am authorized too, since when I tried to paralllize the array swaping, I allocated another array copy and it started failing at 10,000 elements. Therefor, need to do away with these dummy array as much as possible.
+
 2. Need to make exclusive scan thread safe, so that I can use cilk_for in it.
 3. Need to figure out a better way to keep a track of number of less than elements.
 

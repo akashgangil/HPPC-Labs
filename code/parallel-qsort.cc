@@ -86,14 +86,12 @@ void partition (keytype pivot, int N, keytype* A,
 {
 
   int n_lt = 0, n_eq = 0, n_gt = 0;
-  cilk::reducer_opadd<int> less_count;
 
   int *x = (int *) malloc(N * sizeof(int));
   memset(x, 0, N*sizeof(int));
  
-  cilk_for(int i=0; i < N; i++){
+  for(int i=0; i < N; i++){
     x[i] = compare(A[i], pivot);
-    less_count++;
   }
 
  int *b = (int *) malloc(N * sizeof(int));
@@ -121,15 +119,15 @@ void partition (keytype pivot, int N, keytype* A,
  display_arr(A, N);
  #endif
 
- keytype* A_orig = newCopy (N, A);
 
 //for all the elements who were 1 in the compare array,
 //we swap them with the corresponding
 //indexes we get in the exclusive scan output.
 //We also increment n_lt to keep a track ofthe partition point.
-  cilk_for(int i = 0; i < N; i++){
+  for(int i = 0; i < N; i++){
     if(b[i] == 1) { 
-      A[i] = A_orig[x[i]];
+      swap(&A[i], &A[x[i]]);
+      n_lt++;
     }
   }
 
@@ -145,10 +143,8 @@ void partition (keytype pivot, int N, keytype* A,
   free(x);
   free(b);
   free(e);
-  free(A_orig);
 
 
-  n_lt = less_count.get_value();
   if (p_n_lt) *p_n_lt = n_lt;
   if (p_n_eq) *p_n_eq = n_eq;
   if (p_n_gt) *p_n_gt = N - n_lt;
