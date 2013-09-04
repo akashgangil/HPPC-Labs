@@ -13,22 +13,24 @@
 #include "sort.hh"
 #include <cilk/cilk.h>
 
-/**
- *  Pivots the keys of A[0:N-1] around a given pivot value. The number
- *  of keys less than the pivot is returned in *p_n_lt; the number
- *  equal in *p_n_eq; and the number greater in *p_n_gt. The
- *  rearranged keys are stored back in A as follows:
- *
- * - The first *p_n_lt elements of A are all the keys less than the
- *   pivot. That is, they appear in A[0:(*p_n_lt)-1].
- *
- * - The next *p_n_eq elements of A are all keys equal to the
- *   pivot. That is, they appear in A[(*p_n_lt):(*p_n_lt)+(*p_n_eq)-1].
- *
- * - The last *p_n_gt elements of A are all keys greater than the
- *   pivot. That is, they appear in
- *   A[(*p_n_lt)+(*p_n_eq):(*p_n_lt)+(*p_n_eq)+(*p_n_gt)-1].
- */
+int compare(keytype a, keytype b){
+  if(a <= b) return 1;
+  else return 0;
+}
+
+void swap(keytype* a, keytype* b){
+  keytype temp = *a;
+  *a = *b;
+  *b = temp;
+}
+
+void display(int *x, int N){
+	for(int j=0; j < N; j++){
+		printf("%d ", x[j]);
+	}
+	printf("\n");
+}
+
 void partition (keytype pivot, int N, keytype* A,
 		int* p_n_lt, int* p_n_eq, int* p_n_gt)
 {
@@ -36,17 +38,21 @@ void partition (keytype pivot, int N, keytype* A,
   int n_lt = 0, n_eq = 0, n_gt = 0;
 
   int* x = (int *) malloc(N * sizeof(int));
-  x[0] = 0;
+  memset(x, 0, N*sizeof(int));
+ 
   for(int i=1; i < N; i++){
-    x[i] = !compare(x[i], pivot);
+    x[i] = compare(A[i], pivot);
   }
+
+  printf("\nCOMPARE x[i]\n");
+  display(x, N);
 
   int* b = (int *) malloc( N * sizeof(int));
   memcpy(b, x, N *sizeof(int));
 
   for(int j = 1; j <= ceil(log(N)/log(2)); j++){
     int offset = (int)pow(2, j-1);
-    cilk_for (int k = 0; k < N ; k++){
+    for (int k = 0; k < N ; k++){
 	if( k >= k - offset) x[k] += x[k-offset];   
     }
   } 
@@ -69,12 +75,14 @@ void partition (keytype pivot, int N, keytype* A,
 void
 quickSort (int N, keytype* A)
 {
-  const int G = 100; /* base case size, a tuning parameter */
+  const int G = 1; /* base case size, a tuning parameter */
   if (N < G)
     sequentialSort (N, A);
   else {
     // Choose pivot at random
     keytype pivot = A[rand () % N];
+
+    printf("\n PIVOT = %ld\n", pivot);
 
     // Partition around the pivot. Upon completion, n_less, n_equal,
     // and n_greater should each be the number of keys less than,
