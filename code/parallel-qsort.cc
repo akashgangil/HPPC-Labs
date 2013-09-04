@@ -14,7 +14,7 @@
 #include <cilk/cilk.h>
 
 int compare(keytype a, keytype b){
-  if(a <= b) return 1;
+  if(a < b) return 1;
   else return 0;
 }
 
@@ -51,26 +51,23 @@ void partition (keytype pivot, int N, keytype* A,
     x[i] = compare(A[i], pivot);
   }
 
-  
-
-  x[0] = 0;
-
   int* b = (int *) malloc( N * sizeof(int));
   memcpy(b, x, N *sizeof(int));
 
   printf("\nCOMPARE B[i]\n");
   display(b, N);
   
-  printf("\nCOMPARE x[i]\n");
-  display(x, N);
-
 
   for(int j = 1; j <= ceil(log(N)/log(2)); j++){
     int offset = (int)pow(2, j-1);
     for (int k = N-1; k >=0 ; k--){
 	if(k - offset >= 0) x[k] += x[k-offset];   
     }
-  } 
+  }
+
+ for(int j = N-1; j>0; j--) x[j] = x[j-1];
+ x[0] = 0; 
+
 
  printf("\nPREFIX SCAN X[i]\n");
  display(x, N);
