@@ -1,0 +1,15 @@
+Approaches:
+
+1. First I tried using cilk_for along with cilk_opadd for the counter variables n_lt, n_gt, n_eq. Though couldn't find a parallel way to fill in the array even using the cilk directives. So abandoned it.
+
+2. Trying to use the prefix scan approach to partition the array. Here my initial array is derived by comapring the elements with a pivot value. PUtting a 1 if the element is less than pivot and 0 otherwise. 
+2(a). Then I take a exclusive scan for this array.
+2(b).Now for all the element indexes which had 1 in the initial array(those that were small in the pivot), the exclusive scan array has corresponding indexs which partitions them.
+
+TODO:
+1. Need to make exclusive scan thread safe, so that I can use cilk_for in it.
+2. Need to figure out a better way to keep a track of number of less than elements.
+
+
+--
+Akash Gangil
