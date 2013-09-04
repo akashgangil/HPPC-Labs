@@ -13,6 +13,7 @@
 #include "sort.hh"
 #include <cilk/cilk.h>
 
+
 int compare(keytype a, keytype b){
   if(a < b) return 1;
   else return 0;
@@ -54,9 +55,10 @@ void partition (keytype pivot, int N, keytype* A,
   int* b = (int *) malloc( N * sizeof(int));
   memcpy(b, x, N *sizeof(int));
 
+  #ifdef DEBUG 
   printf("\nCOMPARE B[i]\n");
   display(b, N);
-  
+  #endif
 
   for(int j = 1; j <= ceil(log(N)/log(2)); j++){
     int offset = (int)pow(2, j-1);
@@ -68,12 +70,13 @@ void partition (keytype pivot, int N, keytype* A,
  for(int j = N-1; j>0; j--) x[j] = x[j-1];
  x[0] = 0; 
 
-
+ #ifdef DEBUG
  printf("\nPREFIX SCAN X[i]\n");
  display(x, N);
 
  printf("\nA[i] BEFORE\n");
  display_arr(A, N);
+ #endif
 
   for(int i = 0; i < N; i++){
     if(b[i] == 1) { 
@@ -82,12 +85,14 @@ void partition (keytype pivot, int N, keytype* A,
     }
   }
 
+#ifdef DEBUG
  printf("\n A[i] AFTER\n");
  display_arr(A, N);
 
 
  printf("\nCounter Values\n");
  printf("\n n_lt = %d, n_gt = %d", n_lt, N - n_lt);
+#endif
 
   free(x);
   free(b);
@@ -101,8 +106,10 @@ void
 quickSort (int N, keytype* A)
 {
 
+#ifdef DEBUG
   printf("\nStarting the PARTITION subroutine with N = %d\n", N);
   display_arr(A, N);
+#endif
 
   const int G = 1; /* base case size, a tuning parameter */
   if (N<=1)
@@ -111,8 +118,9 @@ quickSort (int N, keytype* A)
   else {
     // Choose pivot at random
     keytype pivot = A[rand () % N];
-
+#ifdef DEBUG
     printf("\n PIVOT = %ld\n", pivot);
+#endif
 
     // Partition around the pivot. Upon completion, n_less, n_equal,
     // and n_greater should each be the number of keys less than,
