@@ -12,22 +12,26 @@
 #include <string.h>
 #include "sort.hh"
 #include <cilk/cilk.h>
-
+#include <cilk/reducer_opadd.h>
 //#define DEBUG
 
 //#define EX_DEBUG
 
+
+/*Compares two keytypes*/
 int compare(keytype a, keytype b){
   if(a < b) return 1;
   else return 0;
 }
 
+/*Swaps two keytypes*/
 void swap(keytype* a, keytype* b){
   keytype temp = *a;
   *a = *b;
   *b = temp;
 }
 
+/*DEBUG: print an integer array*/
 void display(int *x, int N){
 	for(int j=0; j < N; j++){
 		printf("%d ", x[j]);
@@ -35,6 +39,7 @@ void display(int *x, int N){
 	printf("\n");
 }
 
+/*DEBUG: print a keytype array*/
 void display_arr(keytype *x, int N){
 	for(int j=0; j < N; j++){
 		printf("%ld ", x[j]);
@@ -42,6 +47,9 @@ void display_arr(keytype *x, int N){
 	printf("\n");
 }
 
+/* Performs exclusive scan on input array x, 
+ * we use exclusive scan because indexs start
+ * from 0 */
 void exclusive_scan(int* x, int *e, int N){
 
 	if(N == 1) e[0] = 0;
@@ -56,6 +64,7 @@ void exclusive_scan(int* x, int *e, int N){
 		e[i] = x[i];
 	}
 
+	//since we just need to go logN to base 2 steps 
 	for(int step = 0; (1 << step) <= N; step++){		
 		cilk_for(int i = 1<<step ; i < N; i += 1 ){
 			e[i] = e[i] + x[i - (1 << step)];
@@ -77,12 +86,14 @@ void partition (keytype pivot, int N, keytype* A,
 {
 
   int n_lt = 0, n_eq = 0, n_gt = 0;
+  cilk::reducer_opadd<int> less_count;
 
   int *x = (int *) malloc(N * sizeof(int));
   memset(x, 0, N*sizeof(int));
  
   cilk_for(int i=0; i < N; i++){
     x[i] = compare(A[i], pivot);
+    less_count++;
   }
 
  int *b = (int *) malloc(N * sizeof(int));
@@ -110,10 +121,15 @@ void partition (keytype pivot, int N, keytype* A,
  display_arr(A, N);
  #endif
 
-  for(int i = 0; i < N; i++){
+ keytype* A_orig = newCopy (N, A);
+
+//for all the elements who were 1 in the compare array,
+//we swap them with the corresponding
+//indexes we get in the exclusive scan output.
+//We also increment n_lt to keep a track ofthe partition point.
+  cilk_for(int i = 0; i < N; i++){
     if(b[i] == 1) { 
-      swap(&A[i], &A[x[i]]);
-      n_lt++;
+      A[i] = A_orig[x[i]];
     }
   }
 
@@ -129,8 +145,10 @@ void partition (keytype pivot, int N, keytype* A,
   free(x);
   free(b);
   free(e);
+  free(A_orig);
 
 
+  n_lt = less_count.get_value();
   if (p_n_lt) *p_n_lt = n_lt;
   if (p_n_eq) *p_n_eq = n_eq;
   if (p_n_gt) *p_n_gt = N - n_lt;
