@@ -70,12 +70,7 @@ void exclusive_scan(int* x, int *e, int N){
 		   x[i] = e[i];
 		}
 	}
-
-
 }
-
-
-
 
 void partition (keytype pivot, int N, keytype* A,
 		int* p_n_lt, int* p_n_eq, int* p_n_gt)
@@ -83,14 +78,14 @@ void partition (keytype pivot, int N, keytype* A,
 
   int n_lt = 0, n_eq = 0, n_gt = 0;
 
-  int* x = (int *) malloc(N * sizeof(int));
+  int *x = (int *) malloc(N * sizeof(int));
   memset(x, 0, N*sizeof(int));
  
   cilk_for(int i=0; i < N; i++){
     x[i] = compare(A[i], pivot);
   }
 
-  int* b = (int *) malloc( N * sizeof(int));
+ int *b = (int *) malloc(N * sizeof(int));
   memcpy(b, x, N *sizeof(int));
 
   #ifdef DEBUG 
@@ -98,8 +93,8 @@ void partition (keytype pivot, int N, keytype* A,
   display(b, N);
   #endif
 
- int *e = (int*)malloc(N*sizeof(int));
 
+ int *e = (int *) malloc(N * sizeof(int));
  exclusive_scan(x, e, N);
 
  //to get a exclusive scan 
@@ -133,6 +128,8 @@ void partition (keytype pivot, int N, keytype* A,
 
   free(x);
   free(b);
+  free(e);
+
 
   if (p_n_lt) *p_n_lt = n_lt;
   if (p_n_eq) *p_n_eq = n_eq;
