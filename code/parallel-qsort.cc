@@ -13,6 +13,9 @@
 #include "sort.hh"
 #include <cilk/cilk.h>
 
+//#define DEBUG
+
+#define EX_DEBUG
 
 int compare(keytype a, keytype b){
   if(a < b) return 1;
@@ -39,6 +42,41 @@ void display_arr(keytype *x, int N){
 	printf("\n");
 }
 
+void exclusive_scan(int* x, int *e, int N){
+
+	if(N == 1) e[0] = 0;
+
+#ifdef EX_DEBUG
+  printf("\n X[i] Before\n");
+  display(x, N);
+#endif
+
+	//intializing the exclusive scan array to the input array
+	cilk_for(int i= 0; i < N; i++){
+		e[i] = x[i];
+	}
+
+	for(int step = 0; (1 << step) <= N; step++){		
+		for(int i = 1<<step ; i < N; i += 1 ){
+			e[i] = e[i] + x[i - (1 << step)];
+		}
+	
+		#ifdef EX_DEBUG
+		  printf("\nE[i] After Step %d \n", step);
+		  display(e, N);
+		#endif
+				
+		cilk_for(int i = 0; i < N; i++){
+		   x[i] = e[i];
+		}
+	}
+
+
+}
+
+
+
+
 void partition (keytype pivot, int N, keytype* A,
 		int* p_n_lt, int* p_n_eq, int* p_n_gt)
 {
@@ -48,7 +86,7 @@ void partition (keytype pivot, int N, keytype* A,
   int* x = (int *) malloc(N * sizeof(int));
   memset(x, 0, N*sizeof(int));
  
-  for(int i=0; i < N; i++){
+  cilk_for(int i=0; i < N; i++){
     x[i] = compare(A[i], pivot);
   }
 
@@ -60,12 +98,9 @@ void partition (keytype pivot, int N, keytype* A,
   display(b, N);
   #endif
 
-  for(int j = 1; j <= ceil(log(N)/log(2)); j++){
-    int offset = (int)pow(2, j-1);
-    for (int k = N-1; k >=0 ; k--){
-	if(k - offset >= 0) x[k] += x[k-offset];   
-    }
-  }
+ int *e = (int*)malloc(N*sizeof(int));
+
+ exclusive_scan(x, e, N);
 
  for(int j = N-1; j>0; j--) x[j] = x[j-1];
  x[0] = 0; 
