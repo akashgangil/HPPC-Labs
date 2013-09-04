@@ -102,8 +102,10 @@ void partition (keytype pivot, int N, keytype* A,
 
  exclusive_scan(x, e, N);
 
- for(int j = N-1; j>0; j--) x[j] = x[j-1];
- x[0] = 0; 
+ //to get a exclusive scan 
+ cilk_for(int j=0; j<N ; j++)
+	x[j] = x[j] - b[j];
+  
 
  #ifdef DEBUG
  printf("\nPREFIX SCAN X[i]\n");
