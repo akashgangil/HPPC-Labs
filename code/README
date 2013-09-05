@@ -1,4 +1,6 @@
+Summary:
 
+I tried to use the add/scan approach for the partition routine. Though the code doesnt work for number of elements greater than 10000. I tested this out by individually running for 10000 elements.
 
 Approaches:
 1. First I tried using cilk_for along with cilk_opadd for the counter variables n_lt, n_gt, n_eq. Though couldn't find a parallel way to fill in the array even using the cilk directives. So abandoned it.
