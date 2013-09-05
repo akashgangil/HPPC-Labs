@@ -19,13 +19,13 @@
 
 
 /*Compares two keytypes*/
-int compare(keytype a, keytype b){
+inline int compare(keytype a, keytype b){
   if(a < b) return 1;
   else return 0;
 }
 
 /*Swaps two keytypes*/
-void swap(keytype* a, keytype* b){
+inline void swap(keytype* a, keytype* b){
   keytype temp = *a;
   *a = *b;
   *b = temp;
