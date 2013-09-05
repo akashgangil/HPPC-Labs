@@ -65,8 +65,10 @@ void exclusive_scan(int* x, int *e, int N){
 	}
 
 	//since we just need to go logN to base 2 steps 
-	for(int step = 0; (1 << step) <= N; step++){		
+	for(int step = 0; (1 << step) < N; step++){		
 		cilk_for(int i = 1<<step ; i < N; i += 1 ){
+//			if(i < (1 <<step))
+//				printf("%d %d\n",i, 1 << step);
 			e[i] = e[i] + x[i - (1 << step)];
 		}
 	
@@ -90,7 +92,7 @@ void partition (keytype pivot, int N, keytype* A,
   int *x = (int *) malloc(N * sizeof(int));
   memset(x, 0, N*sizeof(int));
  
-  for(int i=0; i < N; i++){
+  cilk_for(int i=0; i < N; i++){
     x[i] = compare(A[i], pivot);
   }
 
@@ -110,7 +112,6 @@ void partition (keytype pivot, int N, keytype* A,
  cilk_for(int j=0; j<N ; j++)
 	x[j] = x[j] - b[j];
   
-
  #ifdef DEBUG
  printf("\nPREFIX SCAN X[i]\n");
  display(x, N);
@@ -126,7 +127,7 @@ void partition (keytype pivot, int N, keytype* A,
 //We also increment n_lt to keep a track ofthe partition point.
   for(int i = 0; i < N; i++){
     if(b[i] == 1) { 
-      swap(&A[i], &A[x[i]]);
+      swap(A+i, A+x[i]);
       n_lt++;
     }
   }
@@ -159,10 +160,10 @@ quickSort (int N, keytype* A)
   display_arr(A, N);
 #endif
 
-  const int G = 1; /* base case size, a tuning parameter */
-  if (N<=1)
-    return;
-    //sequentialSort (N, A);
+  const int G = 100; /* base case size, a tuning parameter */
+  if (N<G)
+    //return;
+    sequentialSort (N, A);
   else {
     // Choose pivot at random
     keytype pivot = A[rand () % N];
@@ -176,7 +177,7 @@ quickSort (int N, keytype* A)
     int n_less = -1, n_equal = -1, n_greater = -1;
     partition (pivot, N, A, &n_less, &n_equal, &n_greater);
     assert (n_less >= 0 && n_equal >= 0 && n_greater >= 0);
-    quickSort (n_less, A);
+    cilk_spawn quickSort (n_less, A);
     quickSort (n_greater, A + n_less + n_equal);
   }
 }
