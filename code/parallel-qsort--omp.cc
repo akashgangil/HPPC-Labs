@@ -12,6 +12,7 @@
 
 #include <algorithm> /* For 'std::swap' template routine */
 
+
 #include "sort.hh"
 
 /**
@@ -85,8 +86,12 @@ The algorithm implemented here is in-place. It does this by
 void reversePartial (int n, keytype* A, int k)
 {
   assert (k <= (n >> 1)); /* k < (n/2) */
-  _Cilk_for (int i = 0; i < k; ++i)
+  int i;
+  #pragma omp parallel for default(none) shared(A, k, n) private (i)
+  for (i = 0; i < k; ++i)
+  {
     std::swap (A[i], A[n-1-i]);
+  }
 }
 
 /**
@@ -163,11 +168,17 @@ partition (keytype pivot, int N, keytype* A,
   // N > G
   int N_mid = N >> 1; // i.e., floor (N / 2)
   int n1_lt = -1, n1_eq = -1, n1_gt = -1;
-  _Cilk_spawn partition (pivot, N_mid, A, &n1_lt, &n1_eq, &n1_gt);
   int n2_lt = -1, n2_eq = -1, n2_gt = -1;
+  
+  #pragma omp task default(none) shared(pivot, N_mid, A, n1_lt, n1_eq, n1_gt)
+  partition (pivot, N_mid, A, &n1_lt, &n1_eq, &n1_gt);
+   
   partition (pivot, N-N_mid, A+N_mid, &n2_lt, &n2_eq, &n2_gt);
-  _Cilk_sync;
+    
+  #pragma omp taskwait
+  
   mergePartitions (A, n1_lt, n1_eq, n1_gt, n2_lt, n2_eq, n2_gt);
+  
   *p_n_lt = n1_lt + n2_lt;
   *p_n_eq = n1_eq + n2_eq;
   *p_n_gt = n1_gt + n2_gt;
@@ -186,14 +197,30 @@ quickSort (int N, keytype* A)
     int n_less = -1, n_equal = -1, n_greater = -1;
     partition (pivot, N, A, &n_less, &n_equal, &n_greater);
     assert (n_less >= 0 && n_equal >= 0 && n_greater >= 0);
-    _Cilk_spawn quickSort (n_less, A);
-    quickSort (n_greater, A + n_less + n_equal);
+
+  
+   #pragma omp task 
+    quickSort(n_less, A);
+
+    /*THINGS I LEARNED
+    * 1. We don't need a omp task for this quicksort because come usder the
+    * default task, master thread. (Need to validate this)
+    */
+    quickSort(n_greater, A + n_less + n_equal);
   }
 }
 
 void
 parallelSort (int N, keytype* A)
 {
+  #pragma omp parallel
+  /* THINGS I LEARNED:
+   * 1. We give the no wait clause so that the threads spawned in 
+   *   a parallel sections dont wait sequentially
+   *2. Specify default shared for things as the behaviour varies
+   *   from implementation to implementation
+   */
+  #pragma omp single nowait 
   quickSort (N, A);
 }
 
