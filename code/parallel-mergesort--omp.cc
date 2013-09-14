@@ -14,39 +14,138 @@
 
 void display(keytype* a, int start, int N)
 {
-  for(int i=start; i<N; i++)
-    printf("%lu ", a[i]);
+  printf("INSIDE DISPLAY : VALUES start %3d N %3d\n", start, N);
+  while(N--)  
+  {
+    printf("%lu ", a[start]);
+    start++;
+  }
   printf("\n");
 }
 
-
-keytype* merge(keytype *arr, int start, int end, int mid)
+/*
+int binarySearch(keytype* a, int mid, int r_start, int r_end)
 {
+  int low = r_start;
+  int high = r_end;
+  while(low < high)
+  {
+    int m = (low + high)/2;
+    if(a[mid] < a[m]) high = m;
+    else low = m + 1;
+  }
+  return high;
+}
+*/
+
+keytype* smerge(keytype *arr, int l_start, int l_end, int r_start, int r_end)
+{
+
+  int l_len = l_end - l_start + 1;
+  int r_len = r_end - r_start;
+   
+  printf("Full Array : \n"); display(arr, 0, r_len+l_len); 
+  printf("Left Array : \n"); display(arr, 0, l_len);
+  printf("Right Array : \n"); display(arr, r_start, r_len);
+  printf("l_start  %3d l_end %3d  r_start %3d r_end %3d l_len %3d r_len %3d\n", l_start, l_end, r_start, r_end, l_len, r_len);
+
+  int i=0;
+  
+  keytype *newArr = (keytype*) malloc((r_len + l_len)*sizeof(keytype));
+
+  while(l_start <= l_end && r_start < r_end)
+  {
+    if(arr[l_start] < arr[r_start])
+    {
+	newArr[i] = arr[l_start];
+	i++;
+	l_start++;	
+    }
+    else
+    {
+	newArr[i] = arr[r_start];
+	i++;
+    	r_start++;
+    }
+  }
+  
+  printf("l_start  %3d l_end %3d  r_start %3d r_end %3d l_len %3d r_len %3d\n", l_start, l_end, r_start, r_end, l_len, r_len);
+  while(l_start <= l_end)
+  {
+    newArr[i] = arr[l_start];
+    i++;
+    l_start++;
+  }
+
+  while(r_start < r_end)
+  {
+    newArr[i] = arr[r_start];
+    i++;
+    r_start++;
+  }
+
   return newArr;
 }
 
+/*
+keytype* pmerge(keytype *arr, int l_start, int l_end, int r_start, int r_end)
+{
+  int l_len = l_end - l_start;
+  int r_len = r_end - r_start;
+  int N = l_len + r_len ;
 
-keytype* mergeSort(int start, int end, keytype* a)
+  keytype *newArr = (keytype*)malloc(N*sizeof(keytype));
+ 
+
+  //middle element in the first array
+  int m = (l_start + l_end)/2;
+
+  int r_partition = binarySearch(a, m, r_start, r_end-1);
+ 
+  int m_index = (m - l_start) + (r_partition - r_start) + 1;
+  newArr[m_index] = a[m];
+
+  //copying the lesser than elements;first part of the array  
+  memcpy(newArr, a, m-l_start);
+  //copying the lesser than, second part of the array
+  memcpy(newArr+m-l_start, a, partition-r_start+1);
+
+  //copying the greater than, first part of the array
+  memcpy(newArr+m_index+1, a, l_end-m+1)
+  //copying the greater than, second part of the array 
+  memcpy(newArr+partition, a, r_end-partition+1);
+
+  merge(arr, l_start, m-1, r_start, r_partition);
+  merge(arr, m+1, l_end, r_partition+1, r_end);
+
+  return newArr;
+}
+*/
+
+void mergeSort(int start, int end, keytype* a)
 {
   int N = end - start;
- 
-  if(N <= 100)
+
+  printf("Hey this is N    : %3d\n", N);
+
+  const int G = 1000; 
+  if(N <= G)
   {
-    sequentialSort(N, a); 
-    return a;
+    sequentialSort(N, a+start); 
+    return;
   }
   
   int mid = (end - start)/2;
 
+  /* [start, end) */
   mergeSort(start, start+mid, a);
   mergeSort(start+mid, end, a);
   
-  keytype *newArr = merge(a, start, end, mid);
-  memcpy(a+start, newArr, N*sizeof(int));
+  keytype *newArr = smerge(a, start, start+mid-1, start+mid, end);
+  
+  memcpy(a+start, newArr, N * sizeof(keytype));
 
   free(newArr);
-
-  return a;
 }
 
 void
