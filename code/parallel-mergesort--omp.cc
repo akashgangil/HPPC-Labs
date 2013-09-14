@@ -5,7 +5,6 @@
  */
 
 #include <assert.h>
-
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
@@ -16,57 +15,13 @@
 void display(keytype* a, int start, int N)
 {
   for(int i=start; i<N; i++)
-    printf("%ld ", a[i]);
+    printf("%lu ", a[i]);
   printf("\n");
 }
 
+
 keytype* merge(keytype *left, keytype *right, int start, int end, int mid)
 {
-  int N = end - start;
-
-  keytype *newArr = (keytype*)malloc(N*sizeof(keytype));
-  int l_max = start+ mid -1;
-  int r_max = end-1; 
-  int l = start;
-  int r = start+mid;
-#ifdef DEBUG
-  printf("PARAMETERS PASSED %3d %3d  %3d\n", N, start, end);
-  printf("Inside the MERGE FUNCTION l = %3d  r = %3d  l_max = %3d r_max = %3d\n", l, r, l_max, r_max);
-#endif
-  int i=0;
-  while( l <= l_max && r <= r_max)
-  {
-      //printf("Comparing %3d and %3d\n", left[l], right[r]);
-      if(left[l] > right[r])
-      {
-	newArr[i] = right[r];
-        r++;
-      }
-      else
-      {
-        newArr[i] = left[l];
-	l++;
-      }
-      i++;
-  }
-
-  while(l <= l_max)
-  {
-    //printf("DEBUG: %3d %3d %3d\n", i, l, left[l]);
-    newArr[i] = left[l];
-    i++;
-    l++;
-  }
-
-  while(r <= r_max)
-  {
-    newArr[i] = right[r];
-    i++;
-    r++;
-  }
-	
-  //printf("NEW ARRAY is : \n");
-  display(newArr, 0, N);
   return newArr;
 }
 
