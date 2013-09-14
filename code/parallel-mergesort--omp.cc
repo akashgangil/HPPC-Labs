@@ -44,8 +44,7 @@ keytype* smerge(keytype *arr, int l_start, int l_end, int r_start, int r_end)
   int i=0;
   
   keytype *newArr = (keytype*) malloc((r_len + l_len)*sizeof(keytype));
-
-  while(l_start <= l_end && r_start < r_end)
+  for(;l_start <= l_end && r_start < r_end;)
   {
     if(arr[l_start] < arr[r_start])
     {
@@ -65,14 +64,14 @@ keytype* smerge(keytype *arr, int l_start, int l_end, int r_start, int r_end)
   printf("l_start  %3d l_end %3d  r_start %3d r_end %3d l_len %3d r_len %3d\n", l_start, l_end, r_start, r_end, l_len, r_len);
 #endif
 
-  while(l_start <= l_end)
+  for(;l_start <= l_end;)
   {
     newArr[i] = arr[l_start];
     i++;
     l_start++;
   }
 
-  while(r_start < r_end)
+  for(;r_start < r_end;)
   {
     newArr[i] = arr[r_start];
     i++;
@@ -110,23 +109,23 @@ keytype* pmerge(keytype *arr, int l_start, int l_end, int r_start, int r_end)
   //middle element in the first array
   int m = (l_start + l_end)/2;
 
-  int r_partition = binarySearch(a, m, r_start, r_end-1);
+  int r_partition = binarySearch(arr, m, r_start, r_end-1);
  
   int m_index = (m - l_start) + (r_partition - r_start) + 1;
-  newArr[m_index] = a[m];
+  newArr[m_index] = arr[m];
 
   //copying the lesser than elements;first part of the array  
-  memcpy(newArr, a, m-l_start);
+  memcpy(newArr, arr, m-l_start);
   //copying the lesser than, second part of the array
-  memcpy(newArr+m-l_start, a, partition-r_start+1);
+  memcpy(newArr+m-l_start, arr, r_partition-r_start+1);
 
   //copying the greater than, first part of the array
-  memcpy(newArr+m_index+1, a, l_end-m+1)
+  memcpy(newArr+m_index+1, arr, l_end-m+1);
   //copying the greater than, second part of the array 
-  memcpy(newArr+partition, a, r_end-partition+1);
+  memcpy(newArr+r_partition, arr, r_end-r_partition+1);
 
-  merge(arr, l_start, m-1, r_start, r_partition);
-  merge(arr, m+1, l_end, r_partition+1, r_end);
+  pmerge(arr, l_start, m-1, r_start, r_partition);
+  pmerge(arr, m+1, l_end, r_partition+1, r_end);
 
   return newArr;
 }
@@ -146,9 +145,13 @@ void mergeSort(int start, int end, keytype* a)
   int mid = (end - start)/2;
 
   /* [start, end) */
+  #pragma omp task default(none) shared(start, mid, a)
   mergeSort(start, start+mid, a);
+
   mergeSort(start+mid, end, a);
-  
+
+  #pragma omp taskwait
+    
   keytype *newArr = smerge(a, start, start+mid-1, start+mid, end);
   
   memcpy(a+start, newArr, N * sizeof(keytype));
@@ -159,7 +162,9 @@ void mergeSort(int start, int end, keytype* a)
 void
 parallelSort (int N, keytype* A)
 {
+  #pragma omp parallel
   /* Lucky you, you get to start from scratch */
+  #pragma omp single nowait
   mergeSort(0, N, A);
 }
 
