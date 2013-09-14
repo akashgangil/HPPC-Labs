@@ -27,20 +27,6 @@ void display(keytype* a, int start, int N)
   printf("\n");
 }
 
-/*
-int binarySearch(keytype* a, int mid, int r_start, int r_end)
-{
-  int low = r_start;
-  int high = r_end;
-  while(low < high)
-  {
-    int m = (low + high)/2;
-    if(a[mid] < a[m]) high = m;
-    else low = m + 1;
-  }
-  return high;
-}
-*/
 
 /*Serial Merge Routine*/
 keytype* smerge(keytype *arr, int l_start, int l_end, int r_start, int r_end)
@@ -96,7 +82,22 @@ keytype* smerge(keytype *arr, int l_start, int l_end, int r_start, int r_end)
   return newArr;
 }
 
-/*
+/*Binary Search Routine*/
+int binarySearch(keytype* a, int mid, int r_start, int r_end)
+{
+  int low = r_start;
+  int high = r_end;
+  while(low < high)
+  {
+    int m = (low + high)/2;
+    if(a[mid] < a[m]) high = m;
+    else low = m + 1;
+  }
+  return high;
+}
+
+
+/*Parallel Merge Routine*/
 keytype* pmerge(keytype *arr, int l_start, int l_end, int r_start, int r_end)
 {
   int l_len = l_end - l_start;
@@ -129,7 +130,7 @@ keytype* pmerge(keytype *arr, int l_start, int l_end, int r_start, int r_end)
 
   return newArr;
 }
-*/
+
 
 void mergeSort(int start, int end, keytype* a)
 {
