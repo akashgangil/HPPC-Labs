@@ -20,7 +20,7 @@ void display(keytype* a, int start, int N)
 }
 
 
-keytype* merge(keytype *left, keytype *right, int start, int end, int mid)
+keytype* merge(keytype *arr, int start, int end, int mid)
 {
   return newArr;
 }
@@ -29,6 +29,7 @@ keytype* merge(keytype *left, keytype *right, int start, int end, int mid)
 keytype* mergeSort(int start, int end, keytype* a)
 {
   int N = end - start;
+ 
   if(N <= 100)
   {
     sequentialSort(N, a); 
@@ -37,12 +38,14 @@ keytype* mergeSort(int start, int end, keytype* a)
   
   int mid = (end - start)/2;
 
-  keytype* left = mergeSort(start, start+mid, a);
-  keytype* right = mergeSort(start+mid, end, a);
+  mergeSort(start, start+mid, a);
+  mergeSort(start+mid, end, a);
   
-  keytype *newArr = merge(left, right, start, end, mid);
+  keytype *newArr = merge(a, start, end, mid);
   memcpy(a+start, newArr, N*sizeof(int));
+
   free(newArr);
+
   return a;
 }
 
