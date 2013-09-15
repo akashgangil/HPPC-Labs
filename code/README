@@ -1,0 +1,18 @@
+Final Results: 
+
+There is some speedup but the parallel merge sort doesn't work.
+My last working code for all the inputs is the following commit
+https://bitbucket.org/akashgangil/lab2/commits/08724ccf7b6c60972e39fc131ad69a1f6afa5542
+
+The above commit just has the normal merge sort with omp directives.
+
+
+1. After that I tried to implement the parallel merge sort after going through the algo.
+2. I mostly didnt thin much and I though I could do away with the output array B.
+3. But it wont work, as there would be contention among threads in this case.
+
+The current code runs in an infinite loop, and I am not able to debug it why is that the
+case. I have already spent more time than I should on this.
+
+pmerge is the parallel merge routine
+smerge is the serial merge routine
