@@ -165,6 +165,8 @@ void pmerge(keytype *arr, int l_start, int l_end, int r_start, int r_end)
    * array are less than m
    */
   if(arr[r_partition] < arr[m]) anomaly = 1;
+  
+  if(r_partition-1 == r_start || r_partition == r_start) return; //the sub array is already sorted
 
 #ifdef DEBUG1
   printf("Other Parameters: m %3d r_partition %3d m_index %3d\n", m , r_partition, m_index);
@@ -197,7 +199,7 @@ void pmerge(keytype *arr, int l_start, int l_end, int r_start, int r_end)
   printf("N value is %3d\n", N);
   printf("Partition Values is %3d\n", r_partition);
   printf(" m is %3d anomaly is %3d\n", m, anomaly);
-  pmerge(arr, l_start, l_start + m , r_start, r_partition+anomaly);
+  pmerge(arr, l_start, l_start + m , r_start, r_partition);
   pmerge(arr, m+1, l_end, r_partition, r_end);
 }
 
