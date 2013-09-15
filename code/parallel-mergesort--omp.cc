@@ -192,14 +192,14 @@ void pmerge(keytype *arr, int l_start, int l_end, int r_start, int r_end)
   free(newArr);
 #ifdef DEBUG1
   printf("*********newArr******* : \n"); display(newArr, 0, N);
-#endif
 
   printf("l_start  %3d l_end %3d  r_start %3d r_end %3d l_len %3d r_len %3d\n",
 				 l_start, l_end, r_start, r_end, l_len, r_len);
   printf("N value is %3d\n", N);
   printf("Partition Values is %3d\n", r_partition);
   printf(" m is %3d anomaly is %3d\n", m, anomaly);
-  pmerge(arr, l_start, l_start + m , r_start, r_partition);
+#endif
+  pmerge(arr, l_start, l_start + m , r_start, r_partition+anomaly);
   pmerge(arr, m+1, l_end, r_partition, r_end);
 }
 
