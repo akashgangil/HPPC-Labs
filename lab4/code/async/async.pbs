@@ -1,0 +1,20 @@
+#PBS -q class
+#PBS -l nodes=2
+#PBS -l walltime=00:01:00
+#PBS -N async
+
+export OMPI_MCA_mpi_yield_when_idle=0
+cd $PBS_O_WORKDIR
+
+
+echo "*** STARTED: `date` on `hostname` ***"
+echo $PWD
+cat $PBS_NODEFILE
+echo -e "\n\n"
+
+# Run the program
+mpirun --hostfile $PBS_NODEFILE -np 2 ./async
+
+echo "*** COMPLETED: `date` on `hostname` ***"
+
+# eof

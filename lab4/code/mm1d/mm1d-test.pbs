@@ -1,0 +1,31 @@
+#PBS -q class
+#PBS -l nodes=1
+#PBS -l walltime=00:01:00
+#PBS -N mm1d-test
+
+export OMPI_MCA_mpi_yield_when_idle=0
+cd $PBS_O_WORKDIR
+
+
+date
+hostname
+echo $PWD
+cat $PBS_NODEFILE
+echo -e "\n\n"
+
+# Run the 1D matrix multiply benchmark
+# Since we know this works, disable validation
+
+# Enable error checking and benchmarking:
+export VERIFY=yes
+
+# Turn on shell command echoing
+set -x
+
+# Choose some test problems:
+mpirun --hostfile $PBS_NODEFILE -np 1 ./mm1d 10 10 10
+mpirun --hostfile $PBS_NODEFILE -np 3 ./mm1d 10 18 13
+mpirun --hostfile $PBS_NODEFILE -np 4 ./mm1d 32 32 32
+mpirun --hostfile $PBS_NODEFILE -np 6 ./mm1d 55 22 81
+
+# eof

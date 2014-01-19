@@ -1,0 +1,34 @@
+Team:
+Shwetha Mathangi Chandra Choodamani <sd302@gatech.edu> 
+GT Id = 902884533
+
+Akash Gangil <agangil3@gatech.edu>
+GT Id = 902950416
+
+
+Performace Improvement: 3000+ FPS. 
+
+Sample Output:
+Conversion from fixed-point to floating-point
+  Naive
+    Performance test:  13.378 ms (74.7 FPS)
+  Optimized
+    Unit test:         PASSED
+    Performance test:  4.469 ms (223.8 FPS)
+    Performance boost: 3.0x
+Matrix-vector multiplication:
+  Naive
+    Performance test:  48.482 us (20626.2 FPS)
+  Naive
+    Unit test:         PASSED
+    Performance test:  21.766 us (45943.2 FPS)
+    Performance boost: 2.2x
+Total (geometric mean):
+  Naive FPS:         1241.7
+  Optimized FPS:     3206.3
+  Performance boost: 2.6x
+
+
+Passes Valgrind:
+==22793== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 9 from 9)
+

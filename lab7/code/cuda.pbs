@@ -1,0 +1,28 @@
+#PBS -q class
+#PBS -l nodes=1:m2090
+#PBS -l walltime=00:01:00
+#PBS -N cuda
+
+# Changes to the directory we were in when we
+# submit the job:
+
+cd $PBS_O_WORKDIR
+
+# Runs a bunch of standard command-line
+# utilities, just as an example:
+
+echo "Script began:" `date`
+echo "Node:" `hostname`
+echo "Current directory: ${PWD}"
+
+echo ""
+echo "=== Running 7 trials of reduction of 16 million elements ... ==="
+for trial in 1 2 3 4 5 6 7; do
+  echo "*** Trial ${trial} ***"
+  ./reduce 16777216 ${trial}
+done
+
+echo ""
+echo "=== Done! ==="
+
+# eof

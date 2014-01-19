@@ -1,0 +1,44 @@
+Summary:
+I tried to use the add/scan approach for the partition routine.
+Though wasnt able to parallelize one loop which I think is keeping me
+away from achieving a greater performance. I am still working on it.
+But submitting it to be deadline-safe.
+
+
+Last Minute Tries to Parallelize the swap for loop -> 
+I made a copy of the original array A_orig and then tried to 
+specify n_lt as reducer_opadd but it didnt work. Hence not committing it.
+
+Approaches:
+1. First I tried using cilk_for along with cilk_opadd for the counter 
+   variables n_lt, n_gt, n_eq. Though couldn't find a parallel way to fill
+   in the array even using the cilk directives. So abandoned it.
+
+2. A Parallel Approach : 
+    Trying to use the prefix scan approach to partition the array.
+    Here my initial array is derived by comapring the elements with
+    a pivot value. PUtting a 1 if the element is less than pivot and 0 otherwise. 
+
+2(a). Then I take a exclusive scan for this array.
+
+2(b).Now for all the element indexes which had 1 in the 
+     initial array(those that were small in the pivot), the exclusive scan 
+     array has corresponding indexs which partitions them.
+
+TODO:
+1. Need to parallelize the swap for loop. 
+2. Need to make exclusive scan thread safe, 
+   so that I can use cilk_for in it. [DONE]
+3. Need to figure out a better way to keep a
+   track of number of less than elements. [DONE]
+
+Questions/Findings:
+1. To shift the elements in the array by right one place. What is better?
+   To loop though it and swap the consecutive variables?
+   Or make a auxilary array and use cilk?
+
+
+
+
+--
+Akash Gangil

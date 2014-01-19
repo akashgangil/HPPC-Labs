@@ -1,0 +1,91 @@
+Question 1: Suppose we set t_delay to 0 and observe the return value of this 
+function on rank 0. What does the return value tell you?
+
+Answer 1: Since the t_delay is 0. Therefore the time that is returned is the
+time required to pass the message to the second node and receive an ack. 
+Since this is the first message that is passed so it also has the initial
+connection setup cost.
+
+
+
+Question 2: Suppose we now gradually increase t_delay. Describe what you would
+expect to happen to the return value on rank 0 if computation and communication
+are not overlapped. What you would instead see if they are overlapped?
+
+Answer 2: If computation and communication are not overlapped you would notice 
+the same graudual increase of t_delay in the function output. Else if they are
+overlapped. We wont see any increase in the return value until the sleep time 
+is <= to the time taken to pass the message and recieve the ack. Since both the
+events (a) computation, sleep in this case and (b) message passing happen
+simultaneously. But once the sleep time exceeds this time, the gradual increase
+in t_delay would reflect in the function return value.
+
+
+
+Question 3: Based on your answer to Question 2 and these measured data, 
+is computation-communication overlap occurring or not?
+
+Answer 3: Yes, there is computation-communication overlap in the measured data.
+Source: aync-isend.dat
+
+
+
+Question 4: Using your data and the known message size, estimate the effective
+communication bandwidth. In your README, show your calculation and briefly 
+state your reasoning. (You may assume this size is "large enough" that you can
+ignore any message latency.)
+
+Answer 4: From the data in async-isend.dat, the time taken to 
+send the message + receive the ack is 0.0025 seconds. 
+
+Ignoring the time for the ack.
+
+  Length of the message = 8388608 bytes or 8 MiB
+
+  Time taken = 0.0025
+  So Bandwidth = 8 MiB / 0.0025 seconds = 3.2GiB/s
+
+
+
+Question 5: Now that OpenMP is enabled, re-run the benchmark. In your README,
+briefly comment on any major differences you observe in the output, if any,
+when compared to the non-OpenMP output. Be sure to look not just at the 
+timing data, but also at the async.e* and async.o* output files. Rename the
+resulting async.dat file to async-blocking-send.dat and commit the result.
+
+Answer 5: In this data we see a gradual increase in the return time of the 
+function as we gradually increase the t_delay. This shows that there is no
+computation and communication overlap and the program flow is synchronous.
+
+
+
+Question 6: Use OpenMP threading and directives to overlap the MPI_Send call
+and the busywait call. Commit your modified code and your new timing data; 
+for the latter, rename async.dat to async-omp-blocking-send.dat. Briefly 
+explain in your README what your technique is and how the data confirms that
+you successfully overlapped the two calls.
+
+Answer 6: I put the async_comm_test function in omp parallel region with single
+nowait. After that I put the MPI_Send() as a omp task so that it can be executed
+in parallel while the main thread executes busy wait. We then use the taskwait
+to synchornize both the threads.
+
+As we can see in the async-omp-blocking-send.dat file, the return time averages
+at 0.07 seconds until the point t_delay is 0.07 seconds So till this point the 
+communication / computation overlap occurs. Beyond that as we increase the
+t_delay the running time increases by that scale.
+
+* TO TAKE THE READING FOR THIS GRAPH I CHANGED THE MAX_DELAY TO 1000*t_delay !! 
+
+
+Question 7: How does the effective bandwidth of MPI_Send() compare to MPI_Isend()+MPI_Wait()?
+
+Answer 7: Time Taken in single trip in this case = 0.07 seconds
+	  Bandwidth = 8MiB / 0.07 seconds = 114.285 MiB/s 
+
+	  So the Bandwith with MPI_ISend() + MPI_Wait() = 3.2GiB/s
+		
+	  So the bandwidth with MPI_Send() + MPI_Wait() was 28 times the
+	   bandwidth with MPI_Send() and openMP implementation.
+
+

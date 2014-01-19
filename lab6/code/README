@@ -1,0 +1,2 @@
+Getting 570 GFLOPS/s for my own kernel.
+Used 2-D blocking with block size as BLOCK_SIZE/2, BLOCK_SIZE/8

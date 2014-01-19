@@ -1,0 +1,17 @@
+RESULTS: 
+
+Works at around 2 billion keys for small arrays size 2, 4 .... 256.
+
+Starts slowing down for larger array sizes.
+
+ATTEMPTS:
+
+Tried three approaches which are commented out in the kernel function.
+
+1. the first one was the usual single threaded array of threads and the transpose was done by (gid / N) + (gid % N) * N. This didnt scale well.
+
+2. I looked at ther options while googling and read the cudaMallocPitch() and cudaMemcpy2D() are more efficient when working with 2D array as they pad the array in multiples of bytes transferred. This was the second method. Although I got a speed up but the output failed in large array sizes.
+
+3. In the final solution, I just merged the first and second approach. Assumed a single threaded array and used cudaMallocPitch() and cudaMemcpy2D() but it still doesnt work well for large array sizes.
+
+

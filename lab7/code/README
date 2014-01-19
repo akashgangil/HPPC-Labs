@@ -1,0 +1,53 @@
+
+GOt 108GB/s for reduceMultAddKernel
+
+
+Executing test case [1]
+[1]: Naive | [2]: Non-divergent | [3]: Sequential Add. | [4]: First add | [5]: Unroll last warp | [6]: Complete unroll | [7] Multiple Adds
+Execution time: 7.522617 ms
+Equivalent performance: 8.920946 GB/s
+Answer is correct
+Reference answer is 0.996214
+GPU answer is 0.996213
+Executing test case [2]
+[1]: Naive | [2]: Non-divergent | [3]: Sequential Add. | [4]: First add | [5]: Unroll last warp | [6]: Complete unroll | [7] Multiple Adds
+Execution time: 5.704391 ms
+Equivalent performance: 11.764423 GB/s
+Answer is correct
+Reference answer is 0.996214
+GPU answer is 0.996213
+Executing test case [3]
+[1]: Naive | [2]: Non-divergent | [3]: Sequential Add. | [4]: First add | [5]: Unroll last warp | [6]: Complete unroll | [7] Multiple Adds
+Execution time: 2.915341 ms
+Equivalent performance: 23.019216 GB/s
+Answer is correct
+Reference answer is 0.996214
+GPU answer is 0.996213
+Executing test case [4]
+[1]: Naive | [2]: Non-divergent | [3]: Sequential Add. | [4]: First add | [5]: Unroll last warp | [6]: Complete unroll | [7] Multiple Adds
+Execution time: 1.797946 ms
+Equivalent performance: 37.325304 GB/s
+Answer is correct
+Reference answer is 0.996214
+GPU answer is 0.996215
+Executing test case [5]
+[1]: Naive | [2]: Non-divergent | [3]: Sequential Add. | [4]: First add | [5]: Unroll last warp | [6]: Complete unroll | [7] Multiple Adds
+Execution time: 1.184787 ms
+Equivalent performance: 56.642128 GB/s
+Answer is correct
+Reference answer is 0.996214
+GPU answer is 0.996215
+Executing test case [6]
+[1]: Naive | [2]: Non-divergent | [3]: Sequential Add. | [4]: First add | [5]: Unroll last warp | [6]: Complete unroll | [7] Multiple Adds
+Execution time: 1.191974 ms
+Equivalent performance: 56.300592 GB/s
+Answer is correct
+Reference answer is 0.996214
+GPU answer is 0.996215
+Executing test case [7]
+[1]: Naive | [2]: Non-divergent | [3]: Sequential Add. | [4]: First add | [5]: Unroll last warp | [6]: Complete unroll | [7] Multiple Adds
+Execution time: 0.619418 ms
+Equivalent performance: 108.341872 GB/s
+Answer is correct
+Reference answer is 0.996214
+GPU answer is 0.996214

@@ -1,0 +1,25 @@
+#PBS -q class
+#PBS -l nodes=4
+#PBS -l walltime=00:02:30
+#PBS -N mm1d
+
+export OMPI_MCA_mpi_yield_when_idle=0
+cd $PBS_O_WORKDIR
+
+
+date
+hostname
+echo $PWD
+cat $PBS_NODEFILE
+echo -e "\n\n"
+
+# Run the 1D matrix multiply benchmark
+# Since we know this works, disable validation
+OUT=strong_scaling.txt
+rm -f ${OUT}
+touch ${OUT}
+for NP in 1 2 4 8 12 16 24 48 64 96 ; do
+  env VERIFY=no mpirun --hostfile $PBS_NODEFILE -np ${NP} ./mm1d 2048 2048 2048 | tee -a ${OUT}
+done
+
+# eof
