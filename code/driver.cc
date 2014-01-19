@@ -24,6 +24,10 @@
 #include "timer.c"
 
 #include "sort.hh"
+<<<<<<< HEAD
+=======
+
+>>>>>>> ced23a2d5b098d74154e53fa3e751b0e16f580f2
 /* ============================================================
  */
 
@@ -48,24 +52,31 @@ main (int argc, char* argv[])
   keytype* A_in = newKeys (N);
   for (int i = 0; i < N; ++i)
     A_in[i] = lrand48 ();
+<<<<<<< HEAD
 #ifdef DEBUG
   printf("\n******INPUT ARRAY**********\n");
   for(int i =0 ; i< N ; i++)
 	printf("%ld ", A_in[i]);	
   printf("\n**************************\n");
 #endif
+=======
+
+>>>>>>> ced23a2d5b098d74154e53fa3e751b0e16f580f2
   printf ("\nN == %d\n\n", N);
 
   /* Sort sequentially */
   keytype* A_seq = newCopy (N, A_in);
   stopwatch_start (timer);
   sequentialSort (N, A_seq);
+<<<<<<< HEAD
 #ifdef DEBUG
   printf("\n*****SEQUENTIALLY SORTED ARRAY*********\n");
   for(int i= 0; i<N ; i++)
 	printf("%ld ", A_seq[i]);
   printf("\n**********************************\n");
 #endif
+=======
+>>>>>>> ced23a2d5b098d74154e53fa3e751b0e16f580f2
   long double t_seq = stopwatch_stop (timer);
   printf ("Sequential: %Lg seconds ==> %Lg million keys per second\n",
 	  t_seq, 1e-6 * N / t_seq);
@@ -75,6 +86,7 @@ main (int argc, char* argv[])
   keytype* A_par = newCopy (N, A_in);
   stopwatch_start (timer);
   parallelSort (N, A_par);
+<<<<<<< HEAD
 
 #ifdef DEBUG
   printf("\n*****PARALLELY SORTED ARRAY*********\n");
@@ -83,6 +95,8 @@ main (int argc, char* argv[])
   printf("\n**********************************\n");
 #endif
 
+=======
+>>>>>>> ced23a2d5b098d74154e53fa3e751b0e16f580f2
   long double t_qs = stopwatch_stop (timer);
   printf ("Parallel sort: %Lg seconds ==> %Lg million keys per second\n",
 	  t_qs, 1e-6 * N / t_qs);

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Summary:
 I tried to use the add/scan approach for the partition routine.
 Though wasnt able to parallelize one loop which I think is keeping me
@@ -42,3 +43,23 @@ Questions/Findings:
 
 --
 Akash Gangil
+=======
+Final Results: 
+
+There is some speedup but the parallel merge sort doesn't work.
+My last working code for all the inputs is the following commit
+https://bitbucket.org/akashgangil/lab2/commits/08724ccf7b6c60972e39fc131ad69a1f6afa5542
+
+The above commit just has the normal merge sort with omp directives.
+
+
+1. After that I tried to implement the parallel merge sort after going through the algo.
+2. I mostly didnt thin much and I though I could do away with the output array B.
+3. But it wont work, as there would be contention among threads in this case.
+
+The current code fails the assertions. I have already spent more time than I should on this.
+Thank you for the extension.
+
+pmerge is the parallel merge routine
+smerge is the serial merge routine
+>>>>>>> ced23a2d5b098d74154e53fa3e751b0e16f580f2
